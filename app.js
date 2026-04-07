@@ -41,19 +41,18 @@ app.get("/", (req, res) => {
   });
 });
 
-// // 404 Handler
-// app.all("*", (req, res, next) => {
-//   next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
-// });
+// 404 Handler
+app.all("/{*any}", (req, res, next) => {
+  next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
+});
 
-// // Global Error Handler
-// app.use((error, req, res, next) => {
-//   const statusCode = error.statusCode || 500;
-//   res.status(statusCode).json({
-//     status: "error",
-//     message: error.message || "Internal Server Error",
-//   });
-//   next();
-// });
+// Global Error Handler
+app.use((error, req, res, next) => {
+  const statusCode = error.statusCode || 500;
+  res.status(statusCode).json({
+    status: "error",
+    message: error.message || "Internal Server Error",
+  });
+});
 
 module.exports = app;
