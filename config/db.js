@@ -1,9 +1,14 @@
 const mongoose = require("mongoose");
 
 let isConnected = false;
+let connectionPromise = null;
 
 async function connectDB() {
   if (isConnected) return;
+  if (connectionPromise) {
+    await connectionPromise;
+    return;
+  }
 
   const mongoUri = process.env.MONGO_URI;
   if (!mongoUri) {
@@ -11,10 +16,12 @@ async function connectDB() {
   }
 
   try {
-    await mongoose.connect(mongoUri);
+    connectionPromise = mongoose.connect(mongoUri);
+    await connectionPromise;
     isConnected = true;
     console.log("Connected to MongoDB");
   } catch (error) {
+    connectionPromise = null;
     console.error("Database connection failed:", error.message);
     throw error;
   }

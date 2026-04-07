@@ -16,9 +16,6 @@ const groupRoutes = require("./routes/groupRoutes");
 
 const app = express();
 
-// Connect to Database
-connectDB();
-
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
@@ -26,6 +23,16 @@ if (process.env.NODE_ENV === "development") {
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
+// Ensure DB is connected for each invocation (safe for serverless cold starts)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(new AppError("Database connection failed", 500));
+  }
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
