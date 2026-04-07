@@ -3,6 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const AppError = require("./utils/AppError");
+const morgan = require("morgan");
+const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -11,16 +13,25 @@ const groupRoutes = require("./routes/groupRoutes");
 
 const app = express();
 
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
+connectDB();
+
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/groups", groupRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/", (req, res) => {
+  res.status(200).json({ message: "Hello From Blog API" });
+});
 
 app.use((req, res, next) => {
   next(new AppError(`Cannot find ${req.originalUrl} on this server`, 404));
