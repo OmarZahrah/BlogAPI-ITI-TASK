@@ -92,4 +92,5 @@ Mongoose model: **Group** (`name`, `admins`, `members`, `permissions.canPost`).
 | DELETE | `/api/groups/:id/remove-member`     | Remove a user from the group         | Yes  | Group admin or `super-admin` |
 | POST   | `/api/groups/:id/grant-permission`  | Allow a member to post in the group  | Yes  | Group admin or `super-admin` |
 | DELETE | `/api/groups/:id/revoke-permission` | Remove posting permission for a user | Yes  | Group admin or `super-admin` |
+
 # BlogAPI-ITI-TASK
