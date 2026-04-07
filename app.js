@@ -24,23 +24,8 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/healthz", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Function is running",
-  });
-});
-
-// Ensure DB is connected for each invocation (safe for serverless cold starts)
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    next(new AppError(error.message || "Database connection failed", 500));
-  }
-});
-
+// Connect to Database
+connectDB();
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
