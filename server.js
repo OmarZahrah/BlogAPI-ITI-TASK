@@ -1,9 +1,14 @@
-require("dotenv").config();
 const app = require("./app");
 
-if (process.env.NODE_ENV === "development") {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+process.on("uncaughtException", (err) => {
+  console.log("Uncaught Exception 🤷‍♂️ Shutting down...");
+  console.log(err);
+  server.close(() => {
+    process.exit(1);
   });
-}
+});
